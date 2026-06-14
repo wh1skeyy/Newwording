@@ -6,10 +6,9 @@ export const supabase = createClient(
   publicAnonKey
 )
 
-// Generates a random 4-char uppercase alphanumeric ID, e.g. "A3F9"
+// Generates a random 4-digit zero-padded number ID, e.g. "0472", "8391"
 function randomId(): string {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789' // no I, O, 0, 1 to avoid confusion
-  return Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+  return String(Math.floor(Math.random() * 10000)).padStart(4, '0')
 }
 
 export async function generateStudentId(): Promise<string> {
