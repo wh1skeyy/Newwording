@@ -159,7 +159,7 @@ export default function LoginPage() {
               lineHeight: 1.2,
             }}
           >
-            Master English with spaced repetition
+            Hello there, got some homework?
           </div>
         </div>
 

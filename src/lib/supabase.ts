@@ -21,7 +21,7 @@ export async function generateStudentId(): Promise<string> {
   throw new Error('Could not generate a unique student ID after 10 attempts')
 }
 
-export async function getNextId(key: 'lessons'): Promise<string> {
+export async function getNextId(key: string): Promise<string> {
   const { data, error } = await supabase.rpc('increment_counter', { counter_key: key })
   if (error) throw error
   return String(data).padStart(4, '0')

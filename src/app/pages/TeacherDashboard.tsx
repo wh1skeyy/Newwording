@@ -284,7 +284,8 @@ export default function TeacherDashboard() {
         return { b1word1: shuffled[0], b1word2: shuffled[1], targetWord: w.word }
       })
 
-      const id = await getNextId('lessons')
+      const idNumber = await getNextId(`lessons_${lessonClassId}`)
+      const id = `${lessonClassId}-${idNumber}`
       const { error } = await supabase.from('lessons').insert({
         id,
         title: lessonTitle,
@@ -692,7 +693,7 @@ export default function TeacherDashboard() {
                       textTransform: 'uppercase',
                       letterSpacing: '0.05em',
                     }}>
-                      LESSON {lesson.id}
+                      LESSON {lesson.id.includes('-') ? lesson.id.split('-').pop() : lesson.id}
                     </div>
                     <div style={{ fontSize: 16, color: '#e0e3e5', marginTop: 4, fontWeight: 400 }}>{lesson.title}</div>
                     <div style={{

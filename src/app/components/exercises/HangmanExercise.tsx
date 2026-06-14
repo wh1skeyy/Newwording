@@ -36,6 +36,7 @@ export default function HangmanExercise({ words, onComplete }: Props) {
   const [currentWord, setCurrentWord] = useState<Word | null>(null)
   const [guessed, setGuessed] = useState<Set<string>>(new Set())
   const [gameOver, setGameOver] = useState<'win' | 'lose' | null>(null)
+  const [wonWords, setWonWords] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     pickWord()
@@ -63,10 +64,14 @@ export default function HangmanExercise({ words, onComplete }: Props) {
     const newWrong = [...next].filter(l => !wordLetters.includes(l))
     if (newWrong.length >= 6) {
       setGameOver('lose')
-      onComplete()
     } else if (wordLetters.every(l => l === ' ' || next.has(l))) {
       setGameOver('win')
-      onComplete()
+      const newWon = new Set(wonWords)
+      newWon.add(currentWord.word)
+      setWonWords(newWon)
+      if (newWon.size >= Math.ceil(words.length * 0.75)) {
+        onComplete()
+      }
     }
   }
 
@@ -139,17 +144,19 @@ export default function HangmanExercise({ words, onComplete }: Props) {
       </div>
 
       {/* Wrong counter */}
-      <div style={{
-        textAlign: 'center',
-        marginTop: 16,
-        fontFamily: "'JetBrains Mono', monospace",
-        fontSize: 12,
-        color: '#ffb4ab',
-        textTransform: 'uppercase',
-        letterSpacing: '0.05em',
-      }}>
-        {wrongCount} / 6 WRONG
-      </div>
+      {!gameOver && (
+        <div style={{
+          textAlign: 'center',
+          marginTop: 16,
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: 12,
+          color: '#ffb4ab',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
+        }}>
+          {wrongCount} / 6 WRONG
+        </div>
+      )}
 
       {/* Alphabet grid */}
       {!gameOver && (
@@ -214,6 +221,9 @@ export default function HangmanExercise({ words, onComplete }: Props) {
             marginBottom: 12,
           }}>
             YOU GOT IT! ✓
+            <div style={{ fontSize: 11, marginTop: 4 }}>
+              PROGRESS: {wonWords.size} / {Math.ceil(words.length * 0.75)} REQUIRED
+            </div>
           </div>
           <WordDefinitionCard word={currentWord} />
           <button
@@ -234,7 +244,7 @@ export default function HangmanExercise({ words, onComplete }: Props) {
               width: '100%',
             }}
           >
-            PLAY AGAIN →
+            CONTINUE →
           </button>
         </div>
       )}
@@ -273,7 +283,7 @@ export default function HangmanExercise({ words, onComplete }: Props) {
               width: '100%',
             }}
           >
-            TRY AGAIN →
+            CONTINUE →
           </button>
         </div>
       )}

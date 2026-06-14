@@ -143,11 +143,6 @@ export default function MatchingExercise({ words, onComplete }: Props) {
         </div>
       )}
 
-      <style>{`
-        @media (max-width: 640px) {
-          .matching-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </div>
   )
 }

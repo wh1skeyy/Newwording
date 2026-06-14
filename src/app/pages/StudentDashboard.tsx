@@ -239,7 +239,7 @@ export default function StudentDashboard() {
                           textTransform: 'uppercase',
                           letterSpacing: '0.05em',
                         }}>
-                          LESSON {lesson.id} · {lesson.word_count} WORDS
+                          LESSON {lesson.id.includes('-') ? lesson.id.split('-').pop() : lesson.id} · {lesson.word_count} WORDS
                         </div>
                       </div>
                       <div onClick={e => e.stopPropagation()}>

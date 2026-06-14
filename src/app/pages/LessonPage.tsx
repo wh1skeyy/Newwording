@@ -33,6 +33,25 @@ export default function LessonPage({ isPractice, practiceStudentId, practiceWord
   const [sentencesLoading, setSentencesLoading] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
   const [completed, setCompleted] = useState<Set<number>>(new Set())
+  const [student, setStudent] = useState<any>(null)
+  const [notified, setNotified] = useState(false)
+
+  useEffect(() => {
+    if (completed.size === 4 && !notified && !isPractice && lesson && student) {
+      setNotified(true)
+      fetch('https://n8n.fonfoto.space/webhook/complete-inform', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentName: student.name,
+          lessonTitle: lesson.title,
+          lessonId: lesson.id,
+          studentId: studentId
+        })
+      }).catch(err => console.error('Failed to notify completion webhook:', err))
+    }
+  }, [completed.size, notified, isPractice, lesson, student, studentId])
+
 
   useEffect(() => {
     if (isPractice && practiceWords) {
@@ -109,6 +128,15 @@ export default function LessonPage({ isPractice, practiceStudentId, practiceWord
               completed_reviews: [...sr.completed_reviews, ...overdueDates],
             }).eq('id', sr.id)
           }
+        }
+
+        const { data: studentData } = await supabase
+          .from('students')
+          .select('name')
+          .eq('id', studentId)
+          .single()
+        if (studentData) {
+          setStudent(studentData)
         }
 
         // Upsert words into master_words
@@ -290,6 +318,26 @@ export default function LessonPage({ isPractice, practiceStudentId, practiceWord
           </button>
         ))}
       </div>
+
+      {completed.size === 4 && (
+        <div className="animate-fade-in px-mobile-16" style={{
+          maxWidth: 800, margin: '32px auto 0',
+          background: 'rgba(78,222,163,0.10)',
+          border: '1px solid rgba(78,222,163,0.20)',
+          borderRadius: 8,
+          padding: '24px',
+          textAlign: 'center'
+        }}>
+          <div style={{ fontSize: 24, fontWeight: 600, color: '#4edea3', marginBottom: 8 }}>🎉 ALL EXERCISES COMPLETED!</div>
+          <div style={{ color: '#c0c1ff', fontSize: 14 }}>Amazing work, {student?.name || 'student'}! You have finished all the tasks for this lesson.</div>
+          <button
+            onClick={() => navigate(backPath)}
+            style={{ marginTop: 16, background: '#4edea3', color: '#101415', border: 'none', borderRadius: 4, padding: '10px 24px', fontWeight: 600, cursor: 'pointer', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.05em' }}
+          >
+            RETURN TO DASHBOARD
+          </button>
+        </div>
+      )}
 
       {/* Tab content */}
       <div
