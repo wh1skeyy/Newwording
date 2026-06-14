@@ -1,0 +1,815 @@
+Build a React + Vite single-page application. This is an English vocabulary
+learning platform for a teacher and their students.
+
+---
+
+## DESIGN SYSTEM — APPLY EXACTLY AS SPECIFIED
+
+### Fonts
+Load both fonts from Google Fonts:
+- "Be Vietnam Pro" weights 400, 500, 600, 700 → all body and heading text
+- "JetBrains Mono" weight 500 → labels, metadata, status indicators, IDs
+
+Set as CSS variables:
+  --font-body: 'Be Vietnam Pro', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+### Colors — Dark Professional Palette
+Add ALL of these as CSS custom properties on :root AND as Tailwind tokens:
+
+/* Base surfaces */
+--color-bg:                #101415;   /* body background */
+--color-surface-lowest:    #0b0f10;
+--color-surface-low:       #191c1e;
+--color-surface:           #1d2022;   /* default card bg */
+--color-surface-high:      #272a2c;
+--color-surface-highest:   #323537;
+--color-surface-bright:    #363a3b;
+
+/* Text */
+--color-on-surface:        #e0e3e5;   /* primary text */
+--color-on-surface-var:    #c7c4d7;   /* secondary text */
+
+/* Borders */
+--color-outline:           #908fa0;
+--color-outline-var:       #464554;   /* subtle borders */
+
+/* Primary — Vibrant Indigo */
+--color-primary:           #c0c1ff;   /* text on dark */
+--color-primary-container: #8083ff;   /* button bg */
+--color-on-primary:        #1000a9;   /* text on primary button */
+--color-primary-glow:      rgba(99,102,241,0.10);
+
+/* Success */
+--color-success:           #4edea3;
+--color-success-dim:       rgba(78,222,163,0.12);
+
+/* Error / Alert */
+--color-error:             #ffb4ab;
+--color-error-container:   #93000a;
+--color-error-dim:         rgba(255,180,171,0.12);
+
+/* Warning */
+--color-warning:           #e8c84d;
+--color-warning-dim:       rgba(232,200,77,0.12);
+
+### Typography scale
+display-lg:   48px / 700 / lh 1.1  / ls -0.02em / Be Vietnam Pro
+headline-lg:  32px / 600 / lh 1.2  / Be Vietnam Pro
+headline-md:  24px / 600 / lh 1.2  / Be Vietnam Pro
+body-md:      16px / 400 / lh 1.6  / Be Vietnam Pro
+body-sm:      14px / 400 / lh 1.5  / Be Vietnam Pro
+label-md:     12px / 500 / lh 1.0  / ls 0.05em  / JetBrains Mono
+label-sm:     11px / 500 / lh 1.0  / ls 0.04em  / JetBrains Mono
+
+### Spacing (4px base)
+xs: 4px | sm: 8px | md: 16px | lg: 24px | xl: 40px
+Desktop margins: 64px | Mobile margins: 16px | Gutters: 24px
+
+### Border radius — Sharp/Professional
+Buttons, inputs, chips: 4px   (rounded)
+Cards, containers:      8px   (rounded-lg)
+Pills/badges:           4px   (NOT full pill — keep sharp)
+Modals:                 8px
+
+### Elevation & Depth — Tonal Layering
+Level 0 — Floor:     bg #101415, no border, no shadow
+Level 1 — Cards:     bg #1d2022, 1px border #464554, no shadow
+Level 2 — Modals:    bg #272a2c, 1px border #908fa0,
+                     backdrop-blur 12px,
+                     box-shadow: 0 10px 30px rgba(99,102,241,0.10)
+Active/Floating:      box-shadow: 0 10px 30px rgba(99,102,241,0.10)
+
+Never use black shadows. Indigo-tinted glow only at highest elevation.
+
+### Component Specs
+
+CARDS
+- bg: #1d2022
+- border: 1px solid #464554
+- border-radius: 8px
+- padding: 24px
+- no drop shadow (depth from color contrast only)
+- hover (interactive): border-color → #8083ff,
+  box-shadow → 0 10px 30px rgba(99,102,241,0.10),
+  transition 200ms ease
+
+BUTTONS
+- border-radius: 4px
+- font: 12px / 500 / JetBrains Mono / ls 0.05em / UPPERCASE
+- padding: 12px 24px
+- transition: all 200ms ease
+
+Primary:   bg #8083ff, color #1000a9,
+           hover: bg #c0c1ff, box-shadow indigo glow
+Secondary: bg transparent, color #c0c1ff,
+           border: 1px solid #464554,
+           hover: border-color #8083ff, color #c0c1ff
+Danger:    bg transparent, color #ffb4ab,
+           border: 1px solid #93000a,
+           hover: bg rgba(255,180,171,0.08)
+Disabled:  bg #272a2c, color #464554, cursor not-allowed
+
+INPUTS
+- bg: #191c1e
+- border: 1px solid #464554
+- border-radius: 4px
+- padding: 10px 14px
+- color: #e0e3e5
+- font: 14px Be Vietnam Pro
+- placeholder: #464554
+- focus: border-color #8083ff,
+         box-shadow: 0 0 0 2px rgba(128,131,255,0.20)
+- label: JetBrains Mono 12px/500, ls 0.05em, uppercase,
+         color #908fa0, margin-bottom 6px
+
+TABS
+- Container: bottom border 1px solid #464554
+- Tab button: padding 12px 20px, font JetBrains Mono 12px uppercase
+- Default: color #908fa0, no border
+- Active: color #c0c1ff, border-bottom 2px solid #8083ff
+- Hover: color #e0e3e5
+- Transition: 200ms ease
+
+BADGES (SR status) — sharp corners, NOT pill
+All badges: border-radius 4px, padding 4px 10px,
+font: JetBrains Mono 11px/500, uppercase, ls 0.04em
+
+Overdue:     bg rgba(255,180,171,0.12), color #ffb4ab,
+             border 1px solid rgba(255,180,171,0.20)
+Due Today:   bg rgba(232,200,77,0.12), color #e8c84d,
+             border 1px solid rgba(232,200,77,0.20)
+Upcoming:    bg rgba(192,193,255,0.10), color #c0c1ff,
+             border 1px solid rgba(192,193,255,0.15)
+Completed:   bg rgba(78,222,163,0.12), color #4edea3,
+             border 1px solid rgba(78,222,163,0.20)
+Not started: bg transparent, color #908fa0,
+             border 1px solid #464554
+
+VOCABULARY TABLE
+- No outer border
+- Header row: bg #191c1e, label-md style (mono, uppercase, #908fa0)
+- Row border: 1px solid #272a2c between rows
+- Row hover: bg #272a2c
+- Cell padding: 14px 16px
+- Word column: color #c0c1ff, Be Vietnam Pro 14px 600
+- Vietnamese column: color #e0e3e5, 14px
+- Type column: render as badge (Upcoming style)
+- Example column: color #908fa0, 14px italic
+
+ANIMATIONS
+fadeIn:  opacity 0→1, translateY 6px→0, 300ms ease
+slideIn: opacity 0→1, translateX -6px→0, 200ms ease
+Apply fadeIn on page/route mounts.
+Apply slideIn on tab content switches.
+
+Skeleton loaders: pulsing bg #272a2c → #323537,
+border-radius 4px, use for all loading states.
+
+---
+
+## TECH STACK
+- React 18 + Vite
+- React Router v6 for routing
+- Supabase JS client (@supabase/supabase-js) —
+  Figma Make will prompt to connect Supabase, accept and link the project
+- Tailwind CSS with custom tokens from design system above
+- Gemini 2.5 Flash API for all AI features (word enrichment + sentence generation)
+- No backend — all Supabase and API calls happen client-side
+
+---
+
+## SUPABASE SETUP
+Figma Make will prompt to link a Supabase project. Accept it.
+It will auto-generate the schema based on these table definitions.
+
+### classes
+id          text primary key
+name        text not null
+created_at  timestamptz default now()
+
+### students
+id          text primary key   -- zero-padded 4-digit e.g. "0001"
+name        text not null
+email       text not null
+class_id    text references classes(id)
+created_at  timestamptz default now()
+
+### lessons
+id            text primary key  -- zero-padded 4-digit e.g. "0001"
+title         text not null
+class_id      text references classes(id)
+word_count    int not null
+words         jsonb not null default '[]'
+b1_word_pairs jsonb not null default '[]'
+sentences     jsonb default null  -- cached AI-generated sentences
+created_at    timestamptz default now()
+
+### master_words
+id          uuid default gen_random_uuid() primary key
+student_id  text references students(id) on delete cascade
+word        text not null
+vietnamese  text not null
+type        text not null
+example     text not null
+added_at    timestamptz default now()
+unique(student_id, word)
+
+### spaced_repetition
+id                uuid default gen_random_uuid() primary key
+student_id        text references students(id) on delete cascade
+lesson_id         text references lessons(id) on delete cascade
+added_date        date not null
+review_dates      jsonb not null default '[]'
+completed_reviews jsonb not null default '[]'
+unique(student_id, lesson_id)
+
+### id_counters
+key   text primary key
+value int not null default 0
+
+-- Seed immediately after creating:
+INSERT INTO id_counters (key, value) VALUES ('students', 0), ('lessons', 0);
+
+---
+
+## TYPE DEFINITIONS
+
+interface Word {
+  word: string
+  vietnamese: string
+  type: string   // "n" | "v" | "adj" | "adv" | "phr v" | "phrase"
+  example: string
+}
+
+interface B1Pair {
+  b1word1: string
+  b1word2: string
+  targetWord: string
+}
+
+---
+
+## B1 WORD LIST
+Create /src/lib/b1words.ts:
+
+export const b1Words: string[] = [
+  "ability", "absent", "accent", "achieve", "active", "adventure",
+  "afraid", "agree", "alarm", "allow", "amazing", "angry", "announce",
+  "answer", "anxious", "appear", "apply", "argue", "arrive", "artist"
+]
+// This array will be replaced with ~3000 words later
+
+---
+
+## SPACED REPETITION LOGIC
+Create /src/lib/spaced-repetition.ts
+
+Intervals: [1, 3, 7, 14, 30, 60, 120] days
+Labels:    ["Day 1", "Day 3", "Day 7", "Day 14", "Day 30", "Day 60", "Day 120"]
+
+export function generateReviewDates(fromDate: Date): string[] {
+  return [1,3,7,14,30,60,120].map(d => {
+    const date = new Date(fromDate)
+    date.setDate(date.getDate() + d)
+    return date.toISOString().split('T')[0]
+  })
+}
+
+export function getSRStatus(record: SRRecord | null): SRStatus {
+  if (!record) return { type: 'not-started', label: 'NOT STARTED' }
+  const today = new Date().toISOString().split('T')[0]
+  const pending = record.review_dates.filter(
+    d => !record.completed_reviews.includes(d)
+  )
+  if (pending.length === 0) return { type: 'completed', label: 'COMPLETED' }
+  const next = pending[0]
+  if (next < today) return { type: 'overdue', label: 'OVERDUE' }
+  if (next === today) return { type: 'due-today', label: 'DUE TODAY' }
+  return { type: 'upcoming', label: `NEXT: ${next}` }
+}
+
+---
+
+## GEMINI AI INTEGRATION
+Create /src/lib/gemini.ts
+
+All AI calls go directly to the Gemini 2.5 Flash API.
+API key is stored in env var VITE_GEMINI_API_KEY.
+Base URL: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
+
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`
+
+async function callGemini(prompt: string): Promise<string> {
+  const res = await fetch(GEMINI_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.3,
+        maxOutputTokens: 4096,
+        responseMimeType: "application/json"
+      }
+    })
+  })
+  const data = await res.json()
+  return data.candidates[0].content.parts[0].text
+}
+
+### FUNCTION 1: enrichWords(words: string[]): Promise<Word[]>
+
+Prompt to send to Gemini:
+"""
+You are an English vocabulary expert for Vietnamese learners.
+Given this list of English words, return a JSON array where each item has:
+- "word": the original English word (string)
+- "vietnamese": the most common Vietnamese translation (string)
+- "type": the grammatical type — use only: "n", "v", "adj", "adv", "phr v", "phrase" (string)
+- "example": one natural example sentence using the word at B1/B2 level (string)
+
+Return ONLY a valid JSON array. No explanation, no markdown, no code blocks.
+
+Words: ${words.join(', ')}
+"""
+
+Parse the response string as JSON → return as Word[].
+On error: return words.map(w => ({ word: w, vietnamese: '...', type: 'n', example: '...' }))
+
+### FUNCTION 2: generateSentences(words: Word[]): Promise<SentenceItem[]>
+
+interface SentenceItem {
+  sentence: string    // sentence with "______" as the blank
+  answer: string      // the correct word
+  options: string[]   // all word.word values from the lesson, shuffled
+}
+
+Prompt to send to Gemini:
+"""
+You are an English teacher creating fill-in-the-blank exercises for Vietnamese B1/B2 students.
+
+Given these vocabulary words (with meanings), create one fill-in-the-blank sentence for EACH word.
+
+Rules:
+- Each sentence must be 8-15 words long
+- Use "______" (6 underscores) as the blank
+- The sentence context must make the correct answer clear
+- Write at B1/B2 level — natural, not overly formal
+- The blank must be filled by exactly the word provided (not a synonym)
+- Return ONLY a valid JSON array, no explanation, no markdown, no code blocks
+
+Each item in the array must have:
+- "sentence": the sentence string containing "______"
+- "answer": the correct word that fills the blank
+
+Words and meanings:
+${words.map(w => `- ${w.word} (${w.type}): ${w.vietnamese} — "${w.example}"`).join('\n')}
+"""
+
+Parse response as JSON array of { sentence, answer }.
+Then add "options" to each item: all lesson words shuffled (so student picks from full word list).
+Return as SentenceItem[].
+
+---
+
+## ROUTING (React Router v6)
+
+/                        → Login gate
+/student/:studentId      → Student dashboard
+/lesson/:lessonId        → Lesson page (reads ?student= from query)
+/practice/:studentId     → Practice session (?count=10|20)
+/teacher                 → Teacher dashboard
+
+---
+
+## SUPABASE HELPER
+Create /src/lib/supabase.ts:
+
+import { createClient } from '@supabase/supabase-js'
+
+export const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+)
+
+export async function getNextId(key: 'students' | 'lessons'): Promise<string> {
+  const { data } = await supabase.rpc('increment_counter', { counter_key: key })
+  return String(data).padStart(4, '0')
+}
+
+Also create this Postgres function in Supabase SQL editor:
+
+CREATE OR REPLACE FUNCTION increment_counter(counter_key text)
+RETURNS int AS $$
+  UPDATE id_counters SET value = value + 1
+  WHERE key = counter_key
+  RETURNING value;
+$$ LANGUAGE sql;
+
+---
+
+## PAGES
+
+---
+
+### / — Login Gate
+
+Full screen centered layout, max-width 360px card, bg #101415.
+Card: bg #1d2022, border #464554, border-radius 8px, padding 32px.
+
+Content:
+- "VOCABULARY LAB" in JetBrains Mono 12px uppercase ls 0.1em,
+  color #8083ff, margin-bottom 8px
+- "Master English with spaced repetition" headline-md, color #e0e3e5
+- Gap 32px
+- Student ID input, label "STUDENT ID", placeholder "0001"
+- Lesson ID input, label "LESSON ID",
+  placeholder "OPTIONAL" in #464554
+- Error badge (error style) shown below inputs when error occurs
+- Primary button "ENTER →" full width
+- Label-sm below: "Contact your teacher for your Student ID",
+  color #908fa0, font mono
+
+INVISIBLE TEACHER ENTRY:
+- position: fixed, top: 0, right: 0, width: 40px, height: 40px
+- No styling whatsoever — no bg, no border, no cursor change
+- onClick: navigate('/teacher')
+
+Logic:
+1. studentId empty → error "STUDENT ID REQUIRED"
+2. Query supabase students where id = studentId
+   - Not found → error "STUDENT NOT FOUND"
+3. If lessonId provided → query lessons where id = lessonId
+   - Not found → error "LESSON NOT FOUND"
+   - Found → navigate(`/lesson/${lessonId}?student=${studentId}`)
+4. No lessonId → navigate(`/student/${studentId}`)
+
+---
+
+### /student/:studentId — Student Dashboard
+
+On mount: fetch student, class, all lessons for class,
+all SR records for student, count of master_words for student.
+
+HEADER (full width, bg #191c1e, border-bottom #464554, px 64px, py 20px):
+- Left: student name headline-md + class name label-md mono below
+- Right: "[N] WORDS LEARNED" label-md mono, color #4edea3
+
+PAGE BODY (max-width 1200px, mx auto, px 64px desktop / 16px mobile):
+
+TAB NAV: "MY LESSONS" | "WORD BANK"
+
+--- MY LESSONS TAB ---
+
+Sort lessons: Overdue → Due Today → Upcoming → Not Started → Completed
+
+Each lesson: card-hover style
+  Layout: flex row, space-between, align-center
+  Left:
+    - SR status badge
+    - Lesson title body-md color #e0e3e5, margin-top 6px
+    - "LESSON [id] · [N] WORDS" label-md, color #908fa0
+  Right:
+    - If Overdue or Due Today: Primary button "REVIEW NOW →"
+    - If Not Started: Secondary button "START →"
+    - If Upcoming: label-sm "NEXT REVIEW [date]", color #c0c1ff
+    - If Completed: nothing (badge says it all)
+  onClick anywhere on card → navigate(`/lesson/${id}?student=${studentId}`)
+
+RANDOM PRACTICE section (show only if master_words count >= 10):
+  Separator line (#272a2c) + section title "PRACTICE" label-md mono
+  Small card: "Drill from your full word bank"
+  Two buttons: "PRACTICE 10" | "PRACTICE 20" (show 20 only if count >= 20)
+  → navigate(`/practice/${studentId}?count=10`)
+
+--- WORD BANK TAB ---
+
+Search input full width, placeholder "SEARCH WORDS...", mono label
+
+Table (no outer border):
+  Header row: WORD | VIETNAMESE | TYPE | EXAMPLE
+  Each row on hover bg #272a2c
+  Word cell: color #c0c1ff, Be Vietnam Pro 14px 600
+  Type cell: badge (Upcoming style — indigo tint)
+  Example cell: color #908fa0, italic
+  Vietnamese cell: color #e0e3e5
+
+Empty state: centered, "NO WORDS YET" headline-md #464554,
+  body-sm "Complete your first lesson to build your word bank."
+
+---
+
+### /lesson/:lessonId — Lesson Page
+Read student id from ?student= query param.
+
+On mount:
+  1. Fetch lesson from Supabase
+  2. Fetch SR record for (studentId, lessonId)
+  3. If no SR record → insert one:
+     { student_id, lesson_id, added_date: today,
+       review_dates: generateReviewDates(today), completed_reviews: [] }
+  4. If SR record exists and has overdue/today dates not in
+     completed_reviews → update completed_reviews to include them
+  5. Upsert lesson.words into master_words for this student
+     (ON CONFLICT (student_id, word) DO NOTHING)
+  6. Check if lesson.sentences is already cached in Supabase.
+     If yes: use cached sentences.
+     If no: call generateSentences(lesson.words) from gemini.ts,
+     then UPDATE lessons SET sentences = result WHERE id = lessonId.
+     Show skeleton loaders while generating.
+
+HEADER (bg #191c1e, border-bottom #464554, px 64px, py 16px):
+  Left: "← BACK" secondary button → /student/[studentId]
+  Center: lesson title headline-md
+  Right: "[N] WORDS" label-md mono
+
+PROGRESS PILLS (4 pills below header, centered, py 16px):
+  "01 MATCHING" | "02 SENTENCES" | "03 MAKE" | "04 HANGMAN"
+  Incomplete: bg #272a2c, color #908fa0, border #464554
+  Complete:   bg rgba(78,222,163,0.12), color #4edea3,
+              border rgba(78,222,163,0.20)
+  All use JetBrains Mono 11px uppercase
+
+TAB NAV: "MATCHING" | "SENTENCES" | "MAKE" | "HANGMAN"
+Track completed exercises in React state: Set<number>
+
+--- TAB 1: MATCHING ---
+
+Shuffle words and meanings separately on mount.
+Two column grid, gap 16px.
+Left: word cards. Right: meaning cards.
+
+Each item card (bg #191c1e, border #464554, 8px radius, p 14px 16px):
+  Default: as above
+  Selected: border #8083ff, bg rgba(128,131,255,0.08)
+  Matched: border rgba(78,222,163,0.40), bg rgba(78,222,163,0.08),
+           locked (pointer-events none), show check icon
+  Wrong: border rgba(255,180,171,0.40), bg rgba(255,180,171,0.08),
+         flash for 400ms then reset
+
+All matched → success banner:
+  bg rgba(78,222,163,0.10), border rgba(78,222,163,0.20), 8px radius
+  "ALL MATCHED" color #4edea3, JetBrains Mono
+Mark exercise 1 complete.
+
+--- TAB 2: SENTENCES ---
+
+Use sentences cached from lesson mount (generated by Gemini).
+Show skeleton loaders if still generating.
+
+Display [wordCount] items. Each item (card, mb 12px):
+  Sentence text body-md, with "______" shown as:
+    span with border-bottom 2px solid #8083ff,
+    min-width 80px, display inline-block
+  Below: horizontal row of word option chips (all lesson words, shuffled)
+    Chip default: bg #272a2c, border #464554, 4px radius,
+                  mono 12px, color #908fa0, p 6px 12px
+    Chip selected (before submit): bg #1d2022, border #8083ff,
+                                   color #c0c1ff
+    Chip correct (after submit):   bg rgba(78,222,163,0.12),
+                                   border rgba(78,222,163,0.20),
+                                   color #4edea3
+    Chip wrong (after submit):     bg rgba(255,180,171,0.12),
+                                   border rgba(255,180,171,0.20),
+                                   color #ffb4ab
+
+"SUBMIT →" primary button, full width, disabled until all answered.
+Score display: "[X] / [N] CORRECT" headline-md
+Mark exercise 2 complete if score >= 70%.
+
+--- TAB 3: SENTENCE MAKING ---
+
+Instructions card (bg #191c1e, border #464554):
+  "USE ALL THREE WORDS IN ONE SENTENCE" label-md mono, color #908fa0
+
+[wordCount] rows, each card (mb 8px):
+  Row number: label-md mono, color #464554
+  Word chips row:
+    B1 word 1: bg #272a2c, color #e0e3e5, border #464554
+    "+" separator: color #464554
+    B1 word 2: bg #272a2c, color #e0e3e5, border #464554
+    "+" separator: color #464554
+    New word (target): bg rgba(128,131,255,0.12),
+                       color #c0c1ff, border rgba(128,131,255,0.25)
+  Textarea (2 rows): full width, mt 10px, same input style as spec above
+
+"SUBMIT ALL →" primary button full width, mt 24px.
+On submit: show success banner "SUBMITTED — YOUR TEACHER WILL REVIEW"
+Mark exercise 3 complete.
+
+--- TAB 4: HANGMAN ---
+
+Pick random word from lesson.words on tab mount.
+Clue card (bg #191c1e):
+  "[TYPE]" label-md mono color #8083ff
+  "[VIETNAMESE]" body-md color #e0e3e5
+  "[example with word replaced by ______]" body-sm italic color #908fa0
+
+SVG stick figure (centered, 200px tall):
+  Stroke color #8083ff, strokeWidth 2
+  Parts appear progressively on wrong guess:
+  Stage 0: gallows (L-shape pole + beam + rope)
+  Stage 1: head (circle)
+  Stage 2: body (vertical line)
+  Stage 3: left arm
+  Stage 4: right arm
+  Stage 5: left leg
+  Stage 6: right leg
+
+Word display (centered, mt 24px):
+  Each letter: 32px wide, border-bottom 2px solid #464554,
+  mx 4px, headline-md color #c0c1ff
+  Spaces between words shown as wider gaps
+
+Alphabet grid (6 columns, mt 24px):
+  Each letter button: secondary style, 36px x 36px, mono 12px
+  Correct guess: bg rgba(78,222,163,0.12), color #4edea3,
+                 border rgba(78,222,163,0.20), disabled
+  Wrong guess:   bg rgba(255,180,171,0.08), color #ffb4ab,
+                 border rgba(255,180,171,0.20), disabled
+
+Wrong counter: label-md mono "[N] / 6 WRONG", color #ffb4ab, mt 16px
+
+Win state: success banner + word definition card. "PLAY AGAIN →" button
+Lose state: error banner "THE WORD WAS [word]" + definition. "TRY AGAIN →"
+Mark exercise 4 complete on win or lose.
+
+---
+
+### /practice/:studentId — Practice Session
+
+Fetch count from ?count= query param (10 or 20).
+On mount: fetch [count] random words from master_words for this student.
+  Use: SELECT * FROM master_words WHERE student_id = X
+       ORDER BY RANDOM() LIMIT [count]
+
+Same layout as lesson page (4 tabs, progress pills).
+For the Sentences tab: call generateSentences(selectedWords) from gemini.ts.
+No caching needed for practice sessions.
+No SR record created.
+Header: "PRACTICE SESSION" + "[count] WORDS FROM YOUR BANK"
+Back: → /student/[studentId]
+
+---
+
+### /teacher — Teacher Dashboard
+
+On mount: check localStorage for teacherAuth === 'true'.
+  If not → show password gate (centered card):
+    "TEACHER ACCESS" label-md mono color #8083ff
+    Password input type="password", label "PASSWORD"
+    "ENTER →" primary button
+    Wrong → error badge "INCORRECT PASSWORD"
+    Correct (check against import.meta.env.VITE_TEACHER_PASSWORD) →
+      localStorage.setItem('teacherAuth', 'true') → show dashboard
+
+Note: use localStorage so teacher stays logged in across refreshes.
+
+DASHBOARD HEADER (bg #191c1e, border-bottom #464554, px 64px, py 20px):
+  Left: "TEACHER DASHBOARD" label-md mono color #c0c1ff
+  Right: today's date label-md mono color #908fa0
+
+3 tabs: "STUDENTS" | "LESSONS" | "CREATE"
+
+--- STUDENTS TAB ---
+
+Two-column layout: left (add forms) | right (student list)
+
+LEFT — Add Class form (card):
+  Input: class name, label "CLASS NAME"
+  "ADD CLASS →" secondary button
+  On submit: INSERT into classes { id: slugify(name), name }
+  Show success toast "CLASS ADDED"
+
+LEFT — Add Student form (card, mt 16px):
+  Input: Full name, label "NAME"
+  Input: Email, label "EMAIL"
+  Select: Class, label "CLASS" (dropdown of all classes)
+  "ADD STUDENT →" primary button
+  On submit:
+    1. Call getNextId('students') → formatted 4-digit string
+    2. INSERT into students
+    3. Show success toast "STUDENT ADDED — ID: [id]"
+
+RIGHT — Student list:
+  Grouped by class. Class name as section header
+  (label-md mono, color #8083ff, border-bottom #272a2c, pb 8px mb 12px)
+  Each student row (flex, space-between, py 12px,
+                    border-bottom 1px solid #272a2c):
+    Left: ID badge (Upcoming style) + name body-sm bold + email label-sm #908fa0
+    Right: "[N] words" label-sm #908fa0 + delete icon button (danger style)
+  Delete: remove from students table (cascades to master_words, SR records)
+
+--- LESSONS TAB ---
+
+List all lessons, newest first.
+Each lesson card (card-hover, flex row space-between):
+  Left:
+    - "LESSON [id]" label-md mono color #8083ff
+    - Lesson title body-md color #e0e3e5 mt 4px
+    - Class name + created date label-sm #908fa0 mt 4px
+  Right:
+    - "[N] WORDS" badge (Upcoming style)
+    - Class name badge
+
+--- CREATE TAB ---
+
+Centered card, max-width 560px.
+
+STEP 1 — Info:
+  Input: title, label "LESSON TITLE"
+  Select: class, label "ASSIGN TO CLASS"
+  Word count toggle (3 buttons, toggle-style):
+    "10" | "15" | "20"
+    Active: bg #8083ff, color #1000a9
+    Inactive: secondary style
+
+STEP 2 — Words (shows after step 1 fields are filled):
+  Label: "ENTER [N] WORDS — ONE PER LINE" label-md mono color #908fa0
+  Textarea (12 rows), placeholder: "ambitious\ndeadline\nexhausted\n..."
+  Counter below: "[X] / [N]" label-md mono,
+    color #4edea3 if count matches wordCount, #908fa0 if not
+  "GENERATE WITH AI →" primary button
+    Disabled until exactly [N] non-empty lines entered
+    On click: call enrichWords(wordArray) from gemini.ts
+    Show skeleton table while loading
+
+STEP 3 — Review (shows after enrichWords resolves):
+  Editable table:
+    WORD column: color #c0c1ff, not editable, bold
+    VIETNAMESE column: text input (input style, pre-filled by AI)
+    TYPE column: select dropdown (n, v, adj, adv, phr v, phrase, idiom),
+                 pre-filled by AI
+    EXAMPLE column: textarea 2 rows (input style, pre-filled by AI)
+  Left border on each row: 2px solid rgba(128,131,255,0.25)
+
+STEP 4 — Publish:
+  "PUBLISH LESSON →" button (bg #006c49, color white), full width
+  On click:
+    1. For each word, pick 2 different random words from b1Words → B1Pair[]
+    2. Call getNextId('lessons') → lesson ID
+    3. INSERT into lessons table with all data
+    4. Fetch all students in classId from Supabase
+    5. POST to https://n8n.fonfoto.space/webhook/hw-send-mail
+       Body: {
+         lessonId,
+         lessonTitle: title,
+         classId,
+         students: [{ name, email, studentId }],
+         directLink: `${import.meta.env.VITE_APP_URL}/?lesson=${lessonId}`
+       }
+    6. Show success toast "LESSON [id] PUBLISHED — STUDENTS NOTIFIED"
+    7. Reset form, switch to Lessons tab
+
+---
+
+## ENV VARIABLES (Vite format)
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+VITE_GEMINI_API_KEY=
+VITE_TEACHER_PASSWORD=2604
+VITE_APP_URL=
+
+---
+
+## IMPORTANT NOTES
+
+- ALL Supabase operations are client-side (no backend needed with Figma Make)
+- Enable Row Level Security (RLS) in Supabase but set permissive policies
+  for now since there is no auth system:
+  CREATE POLICY "allow all" ON [table] FOR ALL USING (true);
+  Apply this to: classes, students, lessons, master_words, spaced_repetition, id_counters
+
+- 4-digit IDs always zero-padded: String(n).padStart(4, '0')
+
+- b1Words array is a placeholder — will be swapped with ~3000 words later.
+  For sentence making B1 pairs, pick 2 DIFFERENT random words per new vocab word:
+  const shuffled = [...b1Words].sort(() => Math.random() - 0.5)
+  const pair = shuffled.slice(0, 2)
+
+- Gemini API temperature is set to 0.3 for consistent, predictable output.
+  Always request responseMimeType: "application/json" to get clean JSON back.
+  Wrap all Gemini calls in try/catch. On failure show error toast and allow retry.
+
+- Sentences tab in lesson page: generate on lesson mount, cache to Supabase.
+  Sentences tab in practice page: generate fresh each session, no caching.
+
+- Skeleton loaders on ALL async data fetches. Never show empty states
+  during loading — always show pulsing skeletons.
+
+- Mobile responsive:
+  - Matching exercise: stack columns vertically on mobile
+  - Lesson cards: stack vertically
+  - Table: horizontal scroll on mobile
+  - Teacher forms: full width single column on mobile
+
+- Invisible teacher entry div must have:
+  style={{ position:'fixed', top:0, right:0, width:40, height:40,
+  zIndex:9999, background:'transparent', border:'none', cursor:'default',
+  outline:'none' }}
+  tabIndex={-1} — absolutely no visual indicator whatsoever
+
+- Toast notifications:
+  Bottom-right corner, bg #272a2c, border #464554, 8px radius,
+  JetBrains Mono 12px, auto-dismiss after 3 seconds,
+  slideIn animation from right
