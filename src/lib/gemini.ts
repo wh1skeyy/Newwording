@@ -2,24 +2,60 @@ import type { Word, SentenceItem } from './types'
 
 export type { SentenceItem }
 
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`
+const GEMINI_MODEL = 'gemini-2.5-flash'
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`
 
 async function callGemini(prompt: string): Promise<string> {
+  // ── Debug: confirm key & model are resolved ──────────────────────────────
+  const keyStatus = !GEMINI_API_KEY
+    ? '❌ MISSING (undefined)'
+    : GEMINI_API_KEY === 'undefined'
+      ? '❌ MISSING (literal "undefined" string — check .env)'
+      : `✅ present (…${GEMINI_API_KEY.slice(-6)})`
+  console.group(`[Gemini] callGemini`)
+  console.log('Model  :', GEMINI_MODEL)
+  console.log('API key:', keyStatus)
+  console.log('Prompt :', prompt.slice(0, 120) + '…')
+  console.groupEnd()
+
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: {
+      temperature: 0.3,
+      maxOutputTokens: 4096,
+      responseMimeType: 'application/json',
+    },
+  }
+
   const res = await fetch(GEMINI_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0.3,
-        maxOutputTokens: 4096,
-        responseMimeType: 'application/json',
-      },
-    }),
+    body: JSON.stringify(body),
   })
-  if (!res.ok) throw new Error(`Gemini API error: ${res.status}`)
+
+  if (!res.ok) {
+    let errorDetail = '(could not parse error body)'
+    try {
+      const errJson = await res.json()
+      errorDetail = errJson?.error?.message ?? JSON.stringify(errJson)
+    } catch {
+      errorDetail = await res.text().catch(() => '(empty body)')
+    }
+    console.error(`[Gemini] ❌ HTTP ${res.status} — ${errorDetail}`)
+    throw new Error(`Gemini API error: ${res.status} — ${errorDetail}`)
+  }
+
   const data = await res.json()
-  return data.candidates[0].content.parts[0].text
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text
+
+  if (!text) {
+    console.error('[Gemini] ❌ Unexpected response shape:', JSON.stringify(data))
+    throw new Error('Gemini returned an unexpected response shape')
+  }
+
+  console.log('[Gemini] ✅ Response received, length:', text.length)
+  return text
 }
 
 export async function enrichWords(words: string[]): Promise<Word[]> {
