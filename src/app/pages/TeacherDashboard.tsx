@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { supabase, getNextId } from '../../lib/supabase'
+import { supabase, getNextId, generateStudentId } from '../../lib/supabase'
 import { enrichWords } from '../../lib/gemini'
 import { b1Words } from '../../lib/b1words'
 import { showToast } from '../components/Toast'
@@ -205,7 +205,7 @@ export default function TeacherDashboard() {
   async function handleAddStudent() {
     if (!studentName || !studentEmail || !studentClassId) return
     try {
-      const id = await getNextId('students')
+      const id = await generateStudentId()
       const { error } = await supabase.from('students').insert({
         id,
         name: studentName,
@@ -230,6 +230,28 @@ export default function TeacherDashboard() {
     const { error } = await supabase.from('students').delete().eq('id', id)
     if (!error) {
       showToast('Student removed', 'info')
+      loadData()
+    } else {
+      showToast(`Error: ${error.message}`, 'error')
+    }
+  }
+
+  async function handleDeleteLesson(id: string, title: string) {
+    if (!window.confirm(`Delete lesson "${title}"? This cannot be undone.`)) return
+    const { error } = await supabase.from('lessons').delete().eq('id', id)
+    if (!error) {
+      showToast(`Lesson ${id} deleted`, 'info')
+      loadData()
+    } else {
+      showToast(`Error: ${error.message}`, 'error')
+    }
+  }
+
+  async function handleDeleteClass(id: string, name: string) {
+    if (!window.confirm(`Delete class "${name}"? All students and lessons in this class will also be deleted.`)) return
+    const { error } = await supabase.from('classes').delete().eq('id', id)
+    if (!error) {
+      showToast(`Class "${name}" deleted`, 'info')
       loadData()
     } else {
       showToast(`Error: ${error.message}`, 'error')
@@ -514,16 +536,42 @@ export default function TeacherDashboard() {
               ) : groupedStudents.map(({ cls, students: clsStudents }) => (
                 <div key={cls.id} style={{ marginBottom: 24 }}>
                   <div style={{
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: 12,
-                    color: '#8083ff',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
                     borderBottom: '1px solid #272a2c',
                     paddingBottom: 8,
                     marginBottom: 12,
                   }}>
-                    {cls.name}
+                    <div style={{
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: 12,
+                      color: '#8083ff',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                    }}>
+                      {cls.name}
+                    </div>
+                    <button
+                      onClick={() => handleDeleteClass(cls.id, cls.name)}
+                      style={{
+                        background: 'transparent',
+                        color: '#ffb4ab',
+                        border: '1px solid #93000a',
+                        borderRadius: 4,
+                        padding: '3px 8px',
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: 10,
+                        cursor: 'pointer',
+                        transition: 'all 200ms ease',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.04em',
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,180,171,0.08)' }}
+                      onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+                    >
+                      DELETE CLASS
+                    </button>
                   </div>
                   {clsStudents.length === 0 ? (
                     <div style={{ color: '#464554', fontSize: 13, fontFamily: "'JetBrains Mono', monospace" }}>NO STUDENTS</div>
@@ -633,7 +681,7 @@ export default function TeacherDashboard() {
                       {cls?.name || lesson.class_id} · {new Date(lesson.created_at).toLocaleDateString()}
                     </div>
                   </div>
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end', alignItems: 'center' }}>
                     <span style={{
                       background: 'rgba(192,193,255,0.10)',
                       color: '#c0c1ff',
@@ -662,6 +710,27 @@ export default function TeacherDashboard() {
                         {cls.name}
                       </span>
                     )}
+                    <button
+                      onClick={e => { e.stopPropagation(); handleDeleteLesson(lesson.id, lesson.title) }}
+                      style={{
+                        background: 'transparent',
+                        color: '#ffb4ab',
+                        border: '1px solid #93000a',
+                        borderRadius: 4,
+                        padding: '4px 10px',
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: 11,
+                        cursor: 'pointer',
+                        transition: 'all 200ms ease',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.04em',
+                        whiteSpace: 'nowrap',
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,180,171,0.08)' }}
+                      onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+                    >
+                      ✕ DELETE
+                    </button>
                   </div>
                 </div>
               )
