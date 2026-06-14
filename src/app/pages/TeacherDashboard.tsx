@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase, getNextId, generateStudentId } from '../../lib/supabase'
+import { projectId, publicAnonKey } from '/utils/supabase/info'
 import { enrichWords } from '../../lib/gemini'
 import { b1Words } from '../../lib/b1words'
 import { showToast } from '../components/Toast'
@@ -315,22 +316,30 @@ export default function TeacherDashboard() {
       }
       console.log('[n8n] Sending webhook payload:', webhookPayload)
       try {
-        const webhookRes = await fetch('https://n8n.fonfoto.space/webhook/hw-send-mail', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(webhookPayload),
-        })
+        // Call our Supabase Edge Function proxy to avoid CORS
+        const webhookRes = await fetch(
+          `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || projectId}.supabase.co/functions/v1/notify-lesson`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${publicAnonKey}`,
+            },
+            body: JSON.stringify(webhookPayload),
+          }
+        )
         if (!webhookRes.ok) {
           const errText = await webhookRes.text().catch(() => '(no body)')
-          console.error(`[n8n] ❌ Webhook failed: HTTP ${webhookRes.status} — ${errText}`)
+          console.error(`[n8n] ❌ Proxy failed: HTTP ${webhookRes.status} — ${errText}`)
           showToast(`Lesson published but email notification failed (${webhookRes.status})`, 'error')
         } else {
-          console.log('[n8n] ✅ Webhook delivered successfully')
+          console.log('[n8n] ✅ Notification delivered successfully')
         }
       } catch (webhookErr: any) {
-        console.error('[n8n] ❌ Webhook network error:', webhookErr.message)
+        console.error('[n8n] ❌ Network error:', webhookErr.message)
         showToast('Lesson published but could not reach notification server', 'error')
       }
+
 
       showToast(`LESSON ${id} PUBLISHED — STUDENTS NOTIFIED`, 'success')
       setLessonTitle('')
