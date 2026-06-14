@@ -302,21 +302,35 @@ export default function TeacherDashboard() {
         .eq('class_id', lessonClassId)
 
       const appUrl = import.meta.env.VITE_APP_URL || ''
-      await fetch('https://n8n.fonfoto.space/webhook/hw-send-mail', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          lessonId: id,
-          lessonTitle: lessonTitle,
-          classId: lessonClassId,
-          students: (classStudents || []).map((s: any) => ({
-            name: s.name,
-            email: s.email,
-            studentId: s.id,
-          })),
-          directLink: `${appUrl}/?lesson=${id}`,
-        }),
-      }).catch(() => {})
+      const webhookPayload = {
+        lessonId: id,
+        lessonTitle: lessonTitle,
+        classId: lessonClassId,
+        students: (classStudents || []).map((s: any) => ({
+          name: s.name,
+          email: s.email,
+          studentId: s.id,
+        })),
+        directLink: `${appUrl}/#/lesson/${id}`,
+      }
+      console.log('[n8n] Sending webhook payload:', webhookPayload)
+      try {
+        const webhookRes = await fetch('https://n8n.fonfoto.space/webhook/hw-send-mail', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(webhookPayload),
+        })
+        if (!webhookRes.ok) {
+          const errText = await webhookRes.text().catch(() => '(no body)')
+          console.error(`[n8n] ❌ Webhook failed: HTTP ${webhookRes.status} — ${errText}`)
+          showToast(`Lesson published but email notification failed (${webhookRes.status})`, 'error')
+        } else {
+          console.log('[n8n] ✅ Webhook delivered successfully')
+        }
+      } catch (webhookErr: any) {
+        console.error('[n8n] ❌ Webhook network error:', webhookErr.message)
+        showToast('Lesson published but could not reach notification server', 'error')
+      }
 
       showToast(`LESSON ${id} PUBLISHED — STUDENTS NOTIFIED`, 'success')
       setLessonTitle('')
