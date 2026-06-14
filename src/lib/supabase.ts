@@ -22,7 +22,7 @@ export async function generateStudentId(): Promise<string> {
 }
 
 export async function getNextId(key: string): Promise<string> {
-  const { data, error } = await supabase.rpc('increment_counter', { counter_key: key })
+  const { data, error } = await supabase.rpc('increment_class_counter', { counter_key: key })
   if (error) throw error
   return String(data).padStart(4, '0')
 }
