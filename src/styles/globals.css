@@ -1,0 +1,72 @@
+@media (max-width: 768px) {
+  /* Generic mobile padding and flex fixes */
+  .px-mobile-16 {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  .p-mobile-16 {
+    padding: 16px !important;
+  }
+  .flex-mobile-col {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .gap-mobile-8 {
+    gap: 8px !important;
+  }
+  
+  /* Component-specific overrides */
+  .responsive-header {
+    padding: 16px !important;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .responsive-body {
+    padding: 0 16px !important;
+  }
+  .lesson-header {
+    padding: 12px 16px !important;
+    flex-wrap: wrap;
+    gap: 12px !important;
+  }
+  .teacher-header {
+    padding: 16px !important;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .teacher-tabs {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    flex-wrap: wrap;
+  }
+  .teacher-tabs button {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 12px 8px !important;
+  }
+  .students-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .word-table-container {
+    padding-bottom: 24px;
+  }
+  .lesson-content {
+    padding: 24px 16px 64px !important;
+  }
+  
+  /* Make text areas and inputs less wide if needed */
+  .practice-container {
+    padding: 16px 16px 40px !important;
+  }
+  .lesson-tabs {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    flex-wrap: wrap;
+    justify-content: flex-start !important;
+  }
+  .lesson-tabs button {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 12px 8px !important;
+  }
+}

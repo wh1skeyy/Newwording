@@ -161,7 +161,7 @@ export default function StudentDashboard() {
         className="responsive-body"
       >
         {/* Tabs */}
-        <div style={{ borderBottom: '1px solid #464554', display: 'flex', marginTop: 32 }}>
+        <div className="lesson-tabs" style={{ borderBottom: '1px solid #464554', display: 'flex', marginTop: 32 }}>
           {(['lessons', 'wordbank'] as const).map(tab => (
             <button
               key={tab}
@@ -187,7 +187,7 @@ export default function StudentDashboard() {
           ))}
         </div>
 
-        <div className="animate-slide-in" key={activeTab} style={{ paddingTop: 24, paddingBottom: 40 }}>
+        <div className="animate-slide-in lesson-content" key={activeTab} style={{ paddingTop: 24, paddingBottom: 40 }}>
           {activeTab === 'lessons' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               {loading ? (
@@ -438,12 +438,7 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      <style>{`
-        @media (max-width: 768px) {
-          .responsive-header { padding: 16px !important; }
-          .responsive-body { padding: 0 16px !important; }
-        }
-      `}</style>
+
     </div>
   )
 }

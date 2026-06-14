@@ -163,11 +163,11 @@ export default function LessonPage({ isPractice, practiceStudentId, practiceWord
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', background: '#101415' }}>
-        <div style={{ background: '#191c1e', borderBottom: '1px solid #464554', padding: '16px 64px', display: 'flex', gap: 24 }}>
+        <div className="responsive-header" style={{ background: '#191c1e', borderBottom: '1px solid #464554', padding: '16px 64px', display: 'flex', gap: 24 }}>
           <Skeleton width={80} height={32} />
           <Skeleton width={200} height={24} />
         </div>
-        <div style={{ maxWidth: 800, margin: '40px auto', padding: '0 64px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="px-mobile-16" style={{ maxWidth: 800, margin: '40px auto', padding: '0 64px', display: 'flex', flexDirection: 'column', gap: 16 }}>
           {Array.from({ length: 3 }).map((_, i) => (
             <Skeleton key={i} height={80} />
           ))}
@@ -240,7 +240,9 @@ export default function LessonPage({ isPractice, practiceStudentId, practiceWord
         gap: 8,
         padding: '16px 64px',
         flexWrap: 'wrap',
-      }}>
+      }}
+      className="px-mobile-16"
+      >
         {TABS.map((tab, i) => (
           <div
             key={tab}
@@ -263,7 +265,7 @@ export default function LessonPage({ isPractice, practiceStudentId, practiceWord
       </div>
 
       {/* Tab nav */}
-      <div style={{ borderBottom: '1px solid #464554', display: 'flex', justifyContent: 'center', padding: '0 64px' }}>
+      <div className="lesson-tabs" style={{ borderBottom: '1px solid #464554', display: 'flex', justifyContent: 'center', padding: '0 64px' }}>
         {TABS.map((tab, i) => (
           <button
             key={tab}
@@ -292,7 +294,7 @@ export default function LessonPage({ isPractice, practiceStudentId, practiceWord
       {/* Tab content */}
       <div
         key={activeTab}
-        className="animate-slide-in"
+        className="animate-slide-in lesson-content"
         style={{ maxWidth: 800, margin: '0 auto', padding: '32px 64px 64px' }}
       >
         {activeTab === 0 && (
@@ -323,11 +325,6 @@ export default function LessonPage({ isPractice, practiceStudentId, practiceWord
         )}
       </div>
 
-      <style>{`
-        @media (max-width: 768px) {
-          .lesson-header { padding: 12px 16px !important; }
-        }
-      `}</style>
     </div>
   )
 }

@@ -37,11 +37,11 @@ export default function PracticePage() {
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', background: '#101415' }}>
-        <div style={{ background: '#191c1e', borderBottom: '1px solid #464554', padding: '16px 64px', display: 'flex', gap: 24 }}>
+        <div className="responsive-header" style={{ background: '#191c1e', borderBottom: '1px solid #464554', padding: '16px 64px', display: 'flex', gap: 24 }}>
           <Skeleton width={80} height={32} />
           <Skeleton width={200} height={24} />
         </div>
-        <div style={{ maxWidth: 800, margin: '40px auto', padding: '0 64px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className="px-mobile-16" style={{ maxWidth: 800, margin: '40px auto', padding: '0 64px', display: 'flex', flexDirection: 'column', gap: 16 }}>
           {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} height={80} />)}
         </div>
       </div>

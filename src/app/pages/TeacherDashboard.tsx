@@ -492,7 +492,7 @@ export default function TeacherDashboard() {
         ))}
       </div>
 
-      <div key={activeTab} className="animate-slide-in" style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 64px 64px' }}>
+      <div key={activeTab} className="animate-slide-in lesson-content" style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 64px 64px' }}>
 
         {/* STUDENTS TAB */}
         {activeTab === 'students' && (
