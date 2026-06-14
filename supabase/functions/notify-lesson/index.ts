@@ -1,6 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
-const N8N_WEBHOOK_URL = 'https://n8n.fonfoto.space/webhook/hw-send-mail'
+const N8N_WEBHOOK_URL = 'https://n8n.fonfoto.space/webhook/hw-send-email'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
