@@ -1,10 +1,17 @@
 import { useState } from 'react'
 import type { Word, B1Pair } from '../../../lib/types'
 
+export interface SentenceMakingResult {
+  targetWord: string
+  b1word1: string
+  b1word2: string
+  studentSentence: string
+}
+
 interface Props {
   words: Word[]
   b1Pairs: B1Pair[]
-  onComplete: () => void
+  onComplete: (results: SentenceMakingResult[]) => void
 }
 
 export default function SentenceMakingExercise({ words, b1Pairs, onComplete }: Props) {
@@ -13,7 +20,13 @@ export default function SentenceMakingExercise({ words, b1Pairs, onComplete }: P
 
   function handleSubmit() {
     setSubmitted(true)
-    onComplete()
+    const results: SentenceMakingResult[] = words.map((word, i) => ({
+      targetWord: word.word,
+      b1word1: b1Pairs[i]?.b1word1 || '',
+      b1word2: b1Pairs[i]?.b1word2 || '',
+      studentSentence: sentences[i] || '',
+    }))
+    onComplete(results)
   }
 
   return (

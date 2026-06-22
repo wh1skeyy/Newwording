@@ -7,7 +7,7 @@ import type { SentenceItem } from '../../lib/types'
 import { showToast } from '../components/Toast'
 import MatchingExercise from '../components/exercises/MatchingExercise'
 import SentencesExercise from '../components/exercises/SentencesExercise'
-import SentenceMakingExercise from '../components/exercises/SentenceMakingExercise'
+import SentenceMakingExercise, { type SentenceMakingResult } from '../components/exercises/SentenceMakingExercise'
 import HangmanExercise from '../components/exercises/HangmanExercise'
 import { Skeleton } from '../components/Skeleton'
 import type { Lesson } from '../../lib/types'
@@ -33,6 +33,7 @@ export default function LessonPage({ isPractice, practiceStudentId, practiceWord
   const [sentencesLoading, setSentencesLoading] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
   const [completed, setCompleted] = useState<Set<number>>(new Set())
+  const [sentenceMakingResults, setSentenceMakingResults] = useState<SentenceMakingResult[]>([])
   const [student, setStudent] = useState<any>(null)
   const [notified, setNotified] = useState(false)
 
@@ -46,7 +47,8 @@ export default function LessonPage({ isPractice, practiceStudentId, practiceWord
           studentName: student.name,
           lessonTitle: lesson.title,
           lessonId: lesson.id,
-          studentId: studentId
+          studentId: studentId,
+          sentenceMaking: sentenceMakingResults,
         })
       }).catch(err => console.error('Failed to notify completion webhook:', err))
     }
@@ -180,7 +182,8 @@ export default function LessonPage({ isPractice, practiceStudentId, practiceWord
     }
   }
 
-  function markComplete(tabIdx: number) {
+  function markComplete(tabIdx: number, data?: SentenceMakingResult[]) {
+    if (tabIdx === 2 && data) setSentenceMakingResults(data)
     setCompleted(prev => new Set([...prev, tabIdx]))
   }
 
@@ -362,7 +365,7 @@ export default function LessonPage({ isPractice, practiceStudentId, practiceWord
           <SentenceMakingExercise
             words={lesson.words}
             b1Pairs={lesson.b1_word_pairs || []}
-            onComplete={() => markComplete(2)}
+            onComplete={(results) => markComplete(2, results)}
           />
         )}
         {activeTab === 3 && (
