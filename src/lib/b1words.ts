@@ -1,9 +1,3 @@
-export const b1Words: string[] = [
-  "ability", "absent", "accent", "achieve", "active", "adventure",
-  "afraid", "agree", "alarm", "allow", "amazing", "angry", "announce",
-  "answer", "anxious", "appear", "apply", "argue", "arrive", "artist"
-]
-// This array will be replaced with ~3000 words later
 // Cambridge B1 Preliminary Vocabulary List (August 2025)
 // 2783 single-word entries extracted from the official Cambridge English word list
 
